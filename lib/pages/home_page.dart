@@ -9,10 +9,11 @@ class HomePage extends StatelessWidget {
         onPressed: () {
           DbNotas dbnotas = DbNotas();
           // dbnotas.initDatabase();
-          dbnotas.insertNota(
-            "Compras del mes",
-            "Comprar pan, queso pollo carne etc",
-          );
+          // dbnotas.insertNota("Tarea3", "R4alizar reportes de la investigación");
+
+          // dbnotas.obtenerNotas().then((resultado) => print(resultado));
+          // dbnotas.actualizarNota(1, "Contenido actualizado");
+          dbnotas.eliminarNota(1);
         },
       ),
     );

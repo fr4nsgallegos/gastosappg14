@@ -29,4 +29,35 @@ class DbNotas {
     final db = await initDatabase();
     db.insert("NOTAS", {"titulo": titulo, "contenido": contenido});
   }
+
+  // OBTENER REGISTROS
+  Future<List<Map<String, dynamic>>> obtenerNotas() async {
+    final db = await initDatabase();
+    // return db.rawQuery("SELECT * FROM NOTAS");
+    // return db.rawQuery(
+    //   "SELECT titulo, contenido FROM NOTAS WHERE titulo = 'Tarea1'",
+    // );
+    return db.query(
+      "NOTAS",
+      where: "titulo = 'Tarea2'",
+      columns: ["id,contenido"],
+    );
+  }
+
+  // ACTUALIZAR
+  Future<void> actualizarNota(int id, String nuevoContenido) async {
+    final db = await initDatabase();
+    await db.update(
+      "NOTAS",
+      {"contenido": nuevoContenido},
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
+  // ELIMINAR
+  Future<void> eliminarNota(int id) async {
+    final db = await initDatabase();
+    await db.delete("NOTAS", where: "id=?", whereArgs: [id]);
+  }
 }
