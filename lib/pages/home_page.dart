@@ -7,8 +7,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          DbNotas dbnotas = DbNotas();
+        onPressed: () async {
+          // DbNotas dbnotas = DbNotas();
           // dbnotas.initDatabase();
           // dbnotas.insertNota("Tarea3", "R4alizar reportes de la investigación");
           // dbnotas.obtenerNotas().then((resultado) => print(resultado));
@@ -24,7 +24,16 @@ class HomePage extends StatelessWidget {
           //   ),
           // );
 
-          dbnotas.obtenerNotasModel().then((notas) => print(notas));
+          // dbnotas.obtenerNotasModel().then((notas) => print(notas));
+
+          // CON PATRÓN SINGLETON
+          await DbNotas.instance
+              .insertNota("NOTA5", "CONTENIDO DE LA NTOA 5")
+              .then((valor) => print(valor));
+          await DbNotas.instance
+              .actualizarNota(3, "nuevoContenido")
+              .then((res) => print(res));
+          await DbNotas.instance.obtenerNotas().then((valie) => print(valie));
         },
       ),
     );

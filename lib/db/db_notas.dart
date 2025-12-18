@@ -42,27 +42,25 @@ class DbNotas {
   }
 
   // INSERTAR
-  Future<void> insertNota(String titulo, String contenido) async {
-    // final db = await _initDatabase();
+  Future<int> insertNota(String titulo, String contenido) async {
     final db = await database;
-    db.insert("NOTAS", {"titulo": titulo, "contenido": contenido});
+    int res = await db.insert("NOTAS", {
+      "titulo": titulo,
+      "contenido": contenido,
+    });
+    return res;
   }
 
-  Future<void> insertarNotaModel(NotaModel notaModel) async {
-    // final db = await _initDatabase();
-    // final db = await database;
+  Future<int> insertarNotaModel(NotaModel notaModel) async {
     final db = await database;
-    await db.insert("NOTAS", notaModel.toMap());
+    int res = await db.insert("NOTAS", notaModel.toMap());
+    return res;
   }
 
   // OBTENER REGISTROS
   Future<List<Map<String, dynamic>>> obtenerNotas() async {
-    // final db = await _initDatabase();
     final db = await database;
-    // return db.rawQuery("SELECT * FROM NOTAS");
-    // return db.rawQuery(
-    //   "SELECT titulo, contenido FROM NOTAS WHERE titulo = 'Tarea1'",
-    // );
+
     return db.query(
       "NOTAS",
       where: "titulo = 'Tarea2'",
@@ -71,7 +69,6 @@ class DbNotas {
   }
 
   Future<List<NotaModel>> obtenerNotasModel() async {
-    // final db = await _initDatabase();
     final db = await database;
     List<Map<String, dynamic>> data = await db.query("NOTAS");
     List<NotaModel> notasModelList = data
@@ -81,15 +78,15 @@ class DbNotas {
   }
 
   // ACTUALIZAR
-  Future<void> actualizarNota(int id, String nuevoContenido) async {
-    // final db = await _initDatabase();
+  Future<int> actualizarNota(int id, String nuevoContenido) async {
     final db = await database;
-    await db.update(
+    int res = await db.update(
       "NOTAS",
       {"contenido": nuevoContenido},
       where: "id = ?",
       whereArgs: [id],
     );
+    return res;
   }
 
   // ELIMINAR
