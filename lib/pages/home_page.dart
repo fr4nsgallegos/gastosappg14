@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gastosappg14/db/db_admin_gastos.dart';
 import 'package:gastosappg14/db/db_notas.dart';
+import 'package:gastosappg14/generated/l10n.dart';
 import 'package:gastosappg14/models/gasto_model.dart';
 import 'package:gastosappg14/models/nota_model.dart';
 import 'package:gastosappg14/widgets/custom_card_item.dart';
@@ -136,6 +137,8 @@ class _HomePageState extends State<HomePage> {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          Text(S.of(context).hello),
+                          Text(S.current.helloAlguien("Jhonny Gallegos")),
                           const Text(
                             "Gestiona tus gastos de mejor forma",
                             style: TextStyle(color: Colors.grey),
