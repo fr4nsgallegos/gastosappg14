@@ -6,6 +6,32 @@ class CategoriesPage extends StatelessWidget {
   const CategoriesPage({required this.db, super.key});
 
   Future<void> _confirmDelete(BuildContext context, Category c) async {
+    // 1. Confirmar si hay notas en esa categoría
+    final count = await db.notesDao.countNotesByCategoryId(c.id);
+
+    if (count > 0) {
+      // "SÍ HAY NOTAS, NO SE DEBE ELIMINAR"
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("No se puede eliminar"),
+          content: Text(
+            "La categoría ${c.name} no se puede eliminar porque existen $count notas asociadas a esta categoría",
+          ),
+          actions: [
+            FilledButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Entendido"),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    // 3. Si no hay notas, pedir confirmacion nromal
     final ok = await showDialog(
       context: context,
       builder: (context) => AlertDialog(

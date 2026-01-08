@@ -72,4 +72,11 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
   Future<int> deleteNote(int id) {
     return (delete(notes)..where((t) => t.id.equals(id))).go();
   }
+
+  // CONTAR LAS NOTAS PERTENECIENTES A CIERTA CAT
+  Future<int> countNotesByCategoryId(int categoryId) async {
+    final q = select(notes)..where((t) => t.categoryId.equals(categoryId));
+    final rows = await q.get();
+    return rows.length;
+  }
 }
