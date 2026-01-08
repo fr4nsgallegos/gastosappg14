@@ -29,4 +29,31 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
       ),
     );
   }
+
+  // READ (Future) -
+  Future<List<Note>> getAllNotes() => select(notes).get();
+
+  // READ (Stream) -
+  Stream<List<Note>> watchAllNotes() =>
+      (select(notes)..orderBy([(t) => OrderingTerm.desc(t.createdAt)])).watch();
+
+  // GET NOTES WITH CATEGORY STREAM
+  Stream<List<NoteWithCategory>> watchNotesWithCategory() {
+    final q = select(notes).join([
+      leftOuterJoin(categories, categories.id.equalsExp(notes.categoryId)),
+    ])..orderBy([OrderingTerm.desc(notes.categoryId)]);
+
+    return q.watch().map((rows) {
+      return rows.map((row) {
+        final note = row.readTable(notes);
+        final category = row.readTableOrNull(categories);
+        return NoteWithCategory(note, category);
+      }).toList();
+    });
+  }
+
+  // DELETE
+  Future<int> deleteNote(int id) {
+    return (delete(notes)..where((t) => t.id.equals(id))).go();
+  }
 }
