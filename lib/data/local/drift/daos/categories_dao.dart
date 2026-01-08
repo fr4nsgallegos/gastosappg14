@@ -15,4 +15,14 @@ class CategoriesDao extends DatabaseAccessor<AppDatabase>
       categories,
     ).insert(CategoriesCompanion.insert(name: name, color: Value(color)));
   }
+
+  //READ
+  Future<List<Category>> getAllCategories() => select(categories).get();
+
+  Stream<List<Category>> watchAllCategories() =>
+      (select(categories)..orderBy([(t) => OrderingTerm.asc(t.name)])).watch();
+
+  Future<int> deleteCategory(int id) {
+    return (delete(categories)..where((t) => t.id.equals(id))).go();
+  }
 }
