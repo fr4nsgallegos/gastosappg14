@@ -39,14 +39,19 @@ class NotesPage extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final catId = await db.categoriesDao.createCategory("Trabajo");
-          await db.notesDao.createNote(
-            titulo: "Revisión de base de datos",
-            contenido:
-                "Hacer una revisión del comportamiento y datos con respecto al mes pasado",
-            categoryId: catId,
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NoteFormPage(db: db)),
           );
+          // final catId = await db.categoriesDao.createCategory("Trabajo");
+          // await db.notesDao.createNote(
+          //   titulo: "Revisión de base de datos",
+          //   contenido:
+          //       "Hacer una revisión del comportamiento y datos con respecto al mes pasado",
+          //   categoryId: catId,
+          // );
         },
+        child: Icon(Icons.add),
       ),
       appBar: AppBar(
         title: Text("Notas"),
@@ -83,6 +88,9 @@ class NotesPage extends StatelessWidget {
               final note = item.note;
               final cat = item.category;
               return ListTile(
+                onTap: () {
+                  print(item.note?.categoryId.toString());
+                },
                 title: Text(note.titulo),
                 subtitle: Text(cat?.name ?? "Sin categoría"),
                 trailing: Wrap(

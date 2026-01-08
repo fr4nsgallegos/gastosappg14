@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gastosappg14/data/local/drift/app_database.dart';
 import 'package:gastosappg14/data/local/drift/tables/categories_table.dart';
+import 'package:gastosappg14/pages/notes_page.dart';
 
 class NoteFormPage extends StatefulWidget {
   final AppDatabase db;
@@ -18,6 +19,30 @@ class _NoteFormPageState extends State<NoteFormPage> {
   int? _selectedCategoryId;
 
   bool get isEditing => widget.editing != null;
+  bool _categoryInitialized = false;
+
+  Future<void> _save() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final titulo = _tituloController.text.trim();
+    final contenido = _contenidoController.text.trim();
+
+    if (isEditing) {
+      await widget.db.notesDao.updateNote(
+        id: widget.editing!.id,
+        titulo: titulo,
+        contenido: contenido,
+        categoryId: _selectedCategoryId,
+      );
+    } else {
+      await widget.db.notesDao.createNote(
+        titulo: titulo,
+        contenido: contenido,
+        categoryId: _selectedCategoryId,
+      );
+    }
+    if (mounted) Navigator.pop(context);
+  }
 
   @override
   void initState() {
@@ -75,10 +100,21 @@ class _NoteFormPageState extends State<NoteFormPage> {
               StreamBuilder(
                 stream: widget.db.categoriesDao.watchAllCategories(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  final List<Category> categories = snapshot.data ?? [];
-                  categories.forEach((element) {
-                    print(element.id);
-                  });
+                  // final List<Category> categories = snapshot.data ?? [];
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  final List<Category> categories = snapshot.data!;
+                  if (!_categoryInitialized) {
+                    final exists = categories.any(
+                      (c) => c.id == widget.editing?.categoryId,
+                    );
+                    _selectedCategoryId = exists
+                        ? widget.editing?.categoryId
+                        : null;
+                    _categoryInitialized = true;
+                  }
+
                   return DropdownButtonFormField(
                     value: _selectedCategoryId,
                     decoration: InputDecoration(
@@ -93,7 +129,7 @@ class _NoteFormPageState extends State<NoteFormPage> {
                       ...categories.map((c) {
                         return DropdownMenuItem(
                           child: Text("${c.name} - ${c.id}"),
-                          value: c.id,
+                          value: c.id.toInt(),
                         );
                       }),
                     ],
@@ -101,6 +137,14 @@ class _NoteFormPageState extends State<NoteFormPage> {
                         setState(() => _selectedCategoryId = value),
                   );
                 },
+              ),
+
+              SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () {
+                  _save();
+                },
+                child: Text(isEditing ? "Editar" : "Guardar Nota"),
               ),
             ],
           ),
