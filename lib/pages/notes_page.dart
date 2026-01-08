@@ -10,6 +10,17 @@ class NotesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final catId = await db.categoriesDao.createCategory("Trabajo");
+          await db.notesDao.createNote(
+            titulo: "Revisión de base de datos",
+            contenido:
+                "Hacer una revisión del comportamiento y datos con respecto al mes pasado",
+            categoryId: catId,
+          );
+        },
+      ),
       appBar: AppBar(title: Text("Notas")),
       body: StreamBuilder(
         stream: db.notesDao.watchNotesWithCategory(),
@@ -22,7 +33,6 @@ class NotesPage extends StatelessWidget {
           if (items.isEmpty) {
             return Center(child: Text("No hay Datos todavía"));
           }
-
           return ListView.separated(
             itemCount: items.length,
             separatorBuilder: (BuildContext context, int index) {
@@ -32,7 +42,6 @@ class NotesPage extends StatelessWidget {
               final item = items[index];
               final note = item.note;
               final cat = item.category;
-
               return ListTile(
                 title: Text(note.titulo),
                 subtitle: Text(cat?.name ?? "Sin categoría"),
