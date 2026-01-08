@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gastosappg14/data/local/drift/app_database.dart';
+import 'package:gastosappg14/pages/categories_page.dart';
 
 class NotesPage extends StatelessWidget {
   final AppDatabase db;
@@ -21,7 +22,20 @@ class NotesPage extends StatelessWidget {
           );
         },
       ),
-      appBar: AppBar(title: Text("Notas")),
+      appBar: AppBar(
+        title: Text("Notas"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CategoriesPage(db: db)),
+              );
+            },
+            icon: Icon(Icons.category_outlined),
+          ),
+        ],
+      ),
       body: StreamBuilder(
         stream: db.notesDao.watchNotesWithCategory(),
         builder: (context, snapshot) {
