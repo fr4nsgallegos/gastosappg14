@@ -46,6 +46,9 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: NotesPage(), debugShowCheckedModeBanner: false);
+    return MaterialApp(
+      home: NotesPage(db: db),
+      debugShowCheckedModeBanner: false,
+    );
   }
 }
