@@ -6,7 +6,32 @@ class NotesPage extends StatelessWidget {
   final AppDatabase db;
   NotesPage({required this.db});
 
-  // Future<void>
+  Future<void> _confirmDelete(BuildContext context, int noteId) async {
+    final ok = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Eliminar nota"),
+        content: Text("¿Seguro que deseas eliminar esta nota?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+            child: Text("Cancelar"),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            child: Text("Eliminar"),
+          ),
+        ],
+      ),
+    );
+    if (ok == true) {
+      await db.notesDao.deleteNote(noteId);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +84,12 @@ class NotesPage extends StatelessWidget {
               return ListTile(
                 title: Text(note.titulo),
                 subtitle: Text(cat?.name ?? "Sin categoría"),
+                trailing: IconButton(
+                  onPressed: () {
+                    _confirmDelete(context, note.id);
+                  },
+                  icon: Icon(Icons.delete, color: Colors.red),
+                ),
               );
             },
           );
