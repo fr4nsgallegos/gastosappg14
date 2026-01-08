@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gastosappg14/data/local/drift/app_database.dart';
 import 'package:gastosappg14/pages/categories_page.dart';
+import 'package:gastosappg14/pages/note_form_page.dart';
 
 class NotesPage extends StatelessWidget {
   final AppDatabase db;
@@ -84,11 +85,29 @@ class NotesPage extends StatelessWidget {
               return ListTile(
                 title: Text(note.titulo),
                 subtitle: Text(cat?.name ?? "Sin categoría"),
-                trailing: IconButton(
-                  onPressed: () {
-                    _confirmDelete(context, note.id);
-                  },
-                  icon: Icon(Icons.delete, color: Colors.red),
+                trailing: Wrap(
+                  spacing: 8,
+                  children: [
+                    IconButton(
+                      tooltip: "Editar",
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                NoteFormPage(db: db, editing: note),
+                          ),
+                        );
+                      },
+                      icon: Icon(Icons.edit),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        _confirmDelete(context, note.id);
+                      },
+                      icon: Icon(Icons.delete, color: Colors.red),
+                    ),
+                  ],
                 ),
               );
             },

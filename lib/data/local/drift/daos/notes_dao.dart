@@ -52,6 +52,22 @@ class NotesDao extends DatabaseAccessor<AppDatabase> with _$NotesDaoMixin {
     });
   }
 
+  // UPDATE
+  Future<int> updateNote({
+    required int id,
+    String? titulo,
+    String? contenido,
+    int? categoryId,
+  }) {
+    return (update(notes)..where((t) => t.id.equals(id))).write(
+      NotesCompanion(
+        titulo: titulo != null ? Value(titulo) : Value.absent(),
+        contenido: contenido != null ? Value(contenido) : Value.absent(),
+        categoryId: Value(categoryId),
+      ),
+    );
+  }
+
   // DELETE
   Future<int> deleteNote(int id) {
     return (delete(notes)..where((t) => t.id.equals(id))).go();
